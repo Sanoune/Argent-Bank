@@ -1,0 +1,128 @@
+openapi: 3.0.0
+info:
+  title: Transactions API
+  description: API pour gérer les transactions des utilisateurs
+  version: 1.0.0
+paths:
+  /transactions:
+    get:
+      summary: Récupérer toutes les transactions du mois en cours, groupées par compte
+      description: Retourne une liste de toutes les transactions du mois en cours, groupées par compte.
+      responses:
+        "200":
+          description: Liste des transactions récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        "401":
+          description: Non autorisé
+    post:
+      summary: Ajouter une nouvelle transaction
+      description: Crée une nouvelle transaction pour un utilisateur.
+      requestBody:
+        description: Détails de la transaction à créer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Transaction"
+      responses:
+        "201":
+          description: Transaction créée avec succès
+        "400":
+          description: Requête invalide
+  /transactions/{transactionId}:
+    get:
+      summary: Récupérer les détails d'une transaction spécifique
+      description: Retourne les détails d'une transaction spécifique.
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          description: ID de la transaction à récupérer
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Détails de la transaction récupérés avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "404":
+          description: Transaction non trouvée
+    put:
+      summary: Modifier une transaction existante
+      description: Met à jour les détails d'une transaction existante.
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          description: ID de la transaction à modifier
+          schema:
+            type: string
+      requestBody:
+        description: Détails de la transaction à mettre à jour
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Transaction"
+      responses:
+        "200":
+          description: Transaction mise à jour avec succès
+        "400":
+          description: Requête invalide
+        "404":
+          description: Transaction non trouvée
+    delete:
+      summary: Supprimer une transaction existante
+      description: Supprime une transaction spécifique.
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          description: ID de la transaction à supprimer
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Transaction supprimée avec succès
+        "404":
+          description: Transaction non trouvée
+components:
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID unique de la transaction
+        accountId:
+          type: string
+          description: ID du compte associé à la transaction
+        date:
+          type: string
+          format: date-time
+          description: Date de la transaction
+        amount:
+          type: number
+          description: Montant de la transaction
+        description:
+          type: string
+          description: Description de la transaction
+        category:
+          type: string
+          description: Catégorie de la transaction
+        type:
+          type: string
+          enum: [credit, debit]
+          description: Type de la transaction, soit crédit ou débit
+      required:
+        - accountId
+        - date
+        - amount
+        - type

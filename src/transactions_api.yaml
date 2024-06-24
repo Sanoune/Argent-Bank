@@ -1,0 +1,253 @@
+swagger: "2.0"
+info:
+  title: Transactions API Documentation
+  description: API endpoints for managing user transactions
+  version: "1.0.0"
+host: localhost:3001
+basePath: /api/v1
+schemes:
+  - http
+paths:
+  /transactions:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Get all transactions
+      description: Retrieve a list of all transactions for the authenticated user
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: "#/definitions/TransactionList"
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Transactions Module
+      summary: Add a new transaction
+      description: Create a new transaction for the authenticated user
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: body
+          name: transaction
+          description: Transaction object
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionCreate"
+      produces:
+        - application/json
+      responses:
+        "201":
+          description: Transaction created successfully
+          schema:
+            $ref: "#/definitions/Transaction"
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /transactions/{transactionId}:
+    get:
+      tags:
+        - Transactions Module
+      summary: Get Transaction Details
+      description: Retrieve details of a specific transaction
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: ID of the transaction
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: "#/definitions/Transaction"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal Server Error
+    put:
+      tags:
+        - Transactions Module
+      summary: Update Transaction
+      description: Update details of a specific transaction
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: ID of the transaction
+          required: true
+          type: string
+        - in: body
+          name: transaction
+          description: Updated transaction object
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionUpdate"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Transaction updated successfully
+          schema:
+            $ref: "#/definitions/Transaction"
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal Server Error
+    delete:
+      tags:
+        - Transactions Module
+      summary: Delete Transaction
+      description: Delete a specific transaction
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: ID of the transaction
+          required: true
+          type: string
+      responses:
+        "204":
+          description: Transaction deleted successfully
+        "401":
+          description: Unauthorized
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal Server Error
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+
+definitions:
+  Transaction:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Transaction ID
+      accountId:
+        type: string
+        description: Account ID associated with the transaction
+      date:
+        type: string
+        format: date-time
+        description: Date and time of the transaction
+      amount:
+        type: number
+        example: 250.4
+        description: Amount of the transaction
+      description:
+        type: string
+        description: Description of the transaction
+      category:
+        type: string
+        description: Category of the transaction
+      type:
+        type: string
+        description: Type of the transaction (credit or debit)
+      notes:
+        type: string
+        description: Additional notes for the transaction
+
+  TransactionCreate:
+    type: object
+    properties:
+      accountId:
+        type: string
+        description: Account ID associated with the transaction
+      date:
+        type: string
+        format: date-time
+        description: Date and time of the transaction
+      amount:
+        type: number
+        example: 250.4
+        description: Amount of the transaction
+      description:
+        type: string
+        description: Description of the transaction
+      category:
+        type: string
+        description: Category of the transaction
+      type:
+        type: string
+        description: Type of the transaction (credit or debit)
+      notes:
+        type: string
+        description: Additional notes for the transaction
+
+  TransactionUpdate:
+    type: object
+    properties:
+      accountId:
+        type: string
+        description: Account ID associated with the transaction
+      date:
+        type: string
+        format: date-time
+        description: Date and time of the transaction
+      amount:
+        type: number
+        example: 250.4
+        description: Amount of the transaction
+      description:
+        type: string
+        description: Description of the transaction
+      category:
+        type: string
+        description: Category of the transaction
+      type:
+        type: string
+        description: Type of the transaction (credit or debit)
+      notes:
+        type: string
+        description: Additional notes for the transaction
+
+  TransactionList:
+    type: array
+    items:
+      $ref: "#/definitions/Transaction"
