@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginUser, setUserData } from "../Store/UserSlice";
+import { loginUser, updateProfile } from "../Store/UserSlice";
 import styles from "./Formulaire.module.css";
 
 function Formulaire() {
@@ -37,7 +37,7 @@ function Formulaire() {
       const userData = await dispatch(loginUser(userCredentials));
 
       // Mettre à jour les données utilisateur dans le store
-      dispatch(setUserData(userData.payload));
+      dispatch(updateProfile(userData.payload));
 
       // Mettre à jour les données utilisateur dans le localStorage
       localStorage.setItem("userData", JSON.stringify(userData.payload));

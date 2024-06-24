@@ -8,12 +8,14 @@ export const loginUser = createAsyncThunk(
     try {
       // Appel à la fonction de connexion de l'API avec l'email et le mot de passe
       const data = await login(email, password);
+      //récupération réponse token
       const token = data.token;
       // Appel à la fonction de profil de l'API avec le token pour récupérer les données de l'utilisateur
       const user = await profile(token);
       // Création d'un objet contenant à la fois le token et les données de l'utilisateur
       const dataUserAndToken = { token: token, ...user };
       // Retour des données utilisateur et du token
+
       return dataUserAndToken;
     } catch (error) {
       console.log(error.message);
@@ -75,9 +77,7 @@ const userSlice = createSlice({
     },
     updateProfile: (state, action) => {
       state.firstName = action.payload.firstName;
-      console.log(action.payload.firstName);
       state.lastName = action.payload.lastName;
-      console.log(action.payload.lastName);
     },
   },
   extraReducers: (builder) => {
@@ -122,7 +122,7 @@ const userSlice = createSlice({
 });
 
 // Export des actions du slice utilisateur
-export const { setUserData, clearUserData, updateProfile } = userSlice.actions;
+export const { clearUserData, updateProfile } = userSlice.actions;
 
 // Export du reducer du slice utilisateur
 export default userSlice.reducer;

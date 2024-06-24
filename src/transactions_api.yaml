@@ -199,10 +199,6 @@ definitions:
       accountId:
         type: string
         description: Account ID associated with the transaction
-      date:
-        type: string
-        format: date-time
-        description: Date and time of the transaction
       amount:
         type: number
         example: 250.4
@@ -223,17 +219,6 @@ definitions:
   TransactionUpdate:
     type: object
     properties:
-      accountId:
-        type: string
-        description: Account ID associated with the transaction
-      date:
-        type: string
-        format: date-time
-        description: Date and time of the transaction
-      amount:
-        type: number
-        example: 250.4
-        description: Amount of the transaction
       description:
         type: string
         description: Description of the transaction
