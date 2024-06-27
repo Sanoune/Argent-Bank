@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Layout from "./Layout";
-
 import ConnectedCheck from "./component/ConnectedCheck";
 import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";

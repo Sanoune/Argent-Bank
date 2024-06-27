@@ -31,7 +31,6 @@ export default function ModificationProfil({ onCancelEdit }) {
 
   const handleCancel = () => {
     // Réinitialisation des champs avec les valeurs actuelles
-
     setFirstName(currentFirstName || "");
     setLastName(currentLastName || "");
     onCancelEdit();

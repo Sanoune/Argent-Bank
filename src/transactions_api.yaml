@@ -9,33 +9,130 @@ schemes:
   - http
 paths:
   /transactions:
-    get:
-      security:
-        - Bearer: []
+    get: # Ajout de l'opération GET pour récupérer toutes les transactions
       tags:
         - Transactions Module
-      summary: Get all transactions
-      description: Retrieve a list of all transactions for the authenticated user
+      summary: Get All Transactions
+      description: Retrieve all transactions
       parameters:
         - in: header
           name: Authorization
           description: Attach Bearer JWT token
           required: true
           type: string
-      produces:
-        - application/json
       responses:
         "200":
           description: Successful response
           schema:
-            $ref: "#/definitions/TransactionList"
+            type: array
+            items:
+              $ref: "#/definitions/Transaction"
         "401":
           description: Unauthorized
         "500":
           description: Internal Server Error
+
     post:
+      tags:
+        - Transactions Module
+      summary: Get Transaction Details
+      description: Retrieve details of a specific transaction
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: body
+          name: transaction
+          description: ID of the transaction
+          required: true
+          schema:
+            type: object
+            properties:
+              transactionId:
+                type: string
+                description: ID of the transaction to retrieve
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: "#/definitions/Transaction"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal Server Error
+
+    delete:
+      tags:
+        - Transactions Module
+      summary: Delete Transaction
+      description: Delete a specific transaction
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: body
+          name: transactionId
+          description: ID of the transaction
+          required: true
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID of the transaction to delete
+      responses:
+        "204":
+          description: Transaction deleted successfully
+        "401":
+          description: Unauthorized
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal Server Error
+
+    patch:
+      tags:
+        - Transactions Module
+      summary: Update Transaction
+      description: Update details of a specific transaction
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: body
+          name: transaction
+          description: Updated transaction object including ID
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionUpdate"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Transaction updated successfully
+          schema:
+            $ref: "#/definitions/Transaction"
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal Server Error
       security:
         - Bearer: []
+
+  /transactions/add:
+    post:
       tags:
         - Transactions Module
       summary: Add a new transaction
@@ -63,96 +160,6 @@ paths:
           description: Bad request
         "401":
           description: Unauthorized
-        "500":
-          description: Internal Server Error
-  /transactions/{transactionId}:
-    get:
-      tags:
-        - Transactions Module
-      summary: Get Transaction Details
-      description: Retrieve details of a specific transaction
-      parameters:
-        - in: header
-          name: Authorization
-          description: Attach Bearer JWT token
-          required: true
-          type: string
-        - in: path
-          name: transactionId
-          description: ID of the transaction
-          required: true
-          type: string
-      responses:
-        "200":
-          description: Successful response
-          schema:
-            $ref: "#/definitions/Transaction"
-        "401":
-          description: Unauthorized
-        "404":
-          description: Transaction not found
-        "500":
-          description: Internal Server Error
-    put:
-      tags:
-        - Transactions Module
-      summary: Update Transaction
-      description: Update details of a specific transaction
-      parameters:
-        - in: header
-          name: Authorization
-          description: Attach Bearer JWT token
-          required: true
-          type: string
-        - in: path
-          name: transactionId
-          description: ID of the transaction
-          required: true
-          type: string
-        - in: body
-          name: transaction
-          description: Updated transaction object
-          required: true
-          schema:
-            $ref: "#/definitions/TransactionUpdate"
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Transaction updated successfully
-          schema:
-            $ref: "#/definitions/Transaction"
-        "400":
-          description: Bad request
-        "401":
-          description: Unauthorized
-        "404":
-          description: Transaction not found
-        "500":
-          description: Internal Server Error
-    delete:
-      tags:
-        - Transactions Module
-      summary: Delete Transaction
-      description: Delete a specific transaction
-      parameters:
-        - in: header
-          name: Authorization
-          description: Attach Bearer JWT token
-          required: true
-          type: string
-        - in: path
-          name: transactionId
-          description: ID of the transaction
-          required: true
-          type: string
-      responses:
-        "204":
-          description: Transaction deleted successfully
-        "401":
-          description: Unauthorized
-        "404":
-          description: Transaction not found
         "500":
           description: Internal Server Error
 
@@ -219,6 +226,9 @@ definitions:
   TransactionUpdate:
     type: object
     properties:
+      id:
+        type: string
+        description: ID of the transaction to update
       description:
         type: string
         description: Description of the transaction
@@ -231,8 +241,3 @@ definitions:
       notes:
         type: string
         description: Additional notes for the transaction
-
-  TransactionList:
-    type: array
-    items:
-      $ref: "#/definitions/Transaction"

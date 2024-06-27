@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginUser, updateProfile } from "../Store/UserSlice";
+import { loginUser } from "../Store/UserSlice";
 import styles from "./Formulaire.module.css";
 
 function Formulaire() {
@@ -11,6 +11,7 @@ function Formulaire() {
   const navigate = useNavigate();
   const { loading, error, token } = useSelector((state) => state.user);
 
+  //Enregistrement token localStorage
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
@@ -29,21 +30,13 @@ function Formulaire() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      //création nouvelle object avec mail et mot de passe utilisateur
       const userCredentials = {
         email: username,
         password: userpassword,
       };
       // Envoyer la requête de connexion et attendre les données utilisateur
-      const userData = await dispatch(loginUser(userCredentials));
-
-      // Mettre à jour les données utilisateur dans le store
-      dispatch(updateProfile(userData.payload));
-
-      // Mettre à jour les données utilisateur dans le localStorage
-      localStorage.setItem("userData", JSON.stringify(userData.payload));
-
-      // Rediriger l'utilisateur vers la page utilisateur
-      navigate("/user");
+      dispatch(loginUser(userCredentials));
     } catch (error) {
       console.log("Error:", error);
     }
@@ -69,6 +62,9 @@ function Formulaire() {
           onChange={handleChangePassword}
         />
       </div>
+      {error === "Rejected" && (
+        <div className="text-red-500">Mot de passe ou email incorrect.</div>
+      )}
       <div className={styles["input-remember"]}>
         <input type="checkbox" id="remember-me" />
         <label htmlFor="remember-me">Remember me</label>

@@ -19,6 +19,7 @@ export const loginUser = createAsyncThunk(
       return dataUserAndToken;
     } catch (error) {
       console.log(error.message);
+
       return rejectWithValue(error.message);
     }
   }
@@ -50,7 +51,6 @@ export const profileUpdate = createAsyncThunk(
 
       return dataUserAndToken;
     } catch (error) {
-      console.log(error.message);
       return rejectWithValue(error.message);
     }
   }
@@ -75,47 +75,49 @@ const userSlice = createSlice({
       state.lastName = null;
       state.token = null;
     },
-    updateProfile: (state, action) => {
-      state.firstName = action.payload.firstName;
-      state.lastName = action.payload.lastName;
-    },
   },
   extraReducers: (builder) => {
     // Gestion des actions asynchrones de la connexion de l'utilisateur
     builder
       .addMatcher(
+        // Lorsque l'une des actions est en cours d'exécution
         isAnyOf(loginUser.pending, profileUser.pending, profileUpdate.pending),
         (state) => {
           state.loading = true; // Définition de l'état de chargement pendant la requête
-          state.error = null; // Réinitialisation de l'erreur à null
+          state.error = null;
+          // Réinitialisation de l'erreur à null
         }
       )
       .addMatcher(
+        // Lorsque l'une des actions est terminée avec succès
         isAnyOf(
           loginUser.fulfilled,
           profileUser.fulfilled,
           profileUpdate.fulfilled
         ),
         (state, action) => {
-          // Lorsque la requête est réussie
-          state.loading = false; // Fin du chargement
-          state.email = action.payload.email; // Mise à jour des données utilisateur dans le store
+          // Mise à jour des données utilisateur dans le store
+          state.loading = false;
+          state.email = action.payload.email;
           state.firstName = action.payload.firstName;
           state.lastName = action.payload.lastName;
+          console.log(state.firstName, state.lastName);
           state.token = action.payload.token;
-          state.error = null; // Réinitialisation de l'erreur à null
+          state.error = null;
         }
       )
       .addMatcher(
         isAnyOf(
+          // En cas d'échec de la requête
           loginUser.rejected,
           profileUser.rejected,
           profileUpdate.rejected
         ),
         (state, action) => {
-          // En cas d'échec de la requête
-          state.loading = false; // Fin du chargement
-          state.error = action.payload.message; // Stockage du message d'erreur dans l'état
+          state.loading = false;
+          state.error = action.error.message;
+
+          // Stockage du message d'erreur dans l'état
         }
       );
   },

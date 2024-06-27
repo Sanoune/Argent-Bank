@@ -8,9 +8,9 @@ function ConnectedCheck() {
   const dispatch = useDispatch();
   const { loading, error, token } = useSelector((state) => state.user);
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const localStoragToken = localStorage.getItem("token");
     // recuperer profil avec token dans localStorage
-    dispatch(profileUser(token));
+    dispatch(profileUser(localStoragToken));
   }, []);
 
   if (loading) {

@@ -29,7 +29,6 @@ function NavBar({ image }) {
             <i className="fa fa-user-circle content-center"></i>{" "}
             <div>{firstName} </div>
           </div>
-
           <button
             className="flex font-semibold items-center gap-2"
             onClick={handleLogout}
